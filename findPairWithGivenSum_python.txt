@@ -1,0 +1,13 @@
+def givenSum(nums,target):
+    target -= 30
+    res = {}
+    out = []
+    for index,value in enumerate(nums):
+        if target - value in res:
+            if res[target-value]>any(out) or index>any(out):
+                out.clear()
+                out.extend([res[target-value], index])
+        else:
+            res[value] = index
+
+    return out

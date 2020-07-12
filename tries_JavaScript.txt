@@ -1,0 +1,38 @@
+
+function Node(label){
+  this.label = label;
+  this.count = 1;
+  this.edges = {};
+  this.stop = false;
+}
+
+function Graph(){
+  this.root = new Node('root');
+  this.add = function(word){
+    let temp;
+    let focus = this.root;
+    for(let i = 0; i<word.length;i++){
+      temp = word.charAt(i);
+      if(focus.edges[temp] === undefined){
+        focus.edges[temp] = new Node(temp);
+      }else{
+        focus.edges[temp].count++;
+      }
+      focus=focus.edges[temp];
+    }
+    focus.stop = true;
+  }
+  this.find = function(word){
+    let temp;
+    let focus = this.root;
+    for(let i = 0; i<word.length;i++){
+      temp = word.charAt(i);
+      if(focus.edges[temp]===undefined){
+        console.log(0);
+        return;
+      }
+      focus = focus.edges[temp];
+    }
+    console.log(focus.count);
+  }
+}

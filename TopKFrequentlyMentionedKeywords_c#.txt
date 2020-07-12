@@ -1,0 +1,12 @@
+private static string[] GetTopKeywords(int k, string[] keywords, string[] reviews)
+        {
+            var keywordsDictionary = new Dictionary<string, int>();
+            foreach (var key in keywords)
+            {
+                int count  = reviews.Count(x => x.ToLower().Contains(key.ToLower()));
+                keywordsDictionary.Add(key, count);
+            }
+
+            return keywordsDictionary.OrderByDescending(x => x.Value).Select(x => x.Key).Take(2).ToArray();
+
+        }

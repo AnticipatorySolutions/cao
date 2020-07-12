@@ -1,0 +1,27 @@
+function orderedList() {
+	this.list = [];
+	this.add = function (num) {
+		const len = this.list.length;
+		if (len === 0) {
+			this.list.push(num);
+			return;
+		}
+		let first = this.list[0];
+		if (num <= first){
+			this.list.unshift(num);
+			return;
+		}		
+		let last = this.list[len-1];
+		if (num >= last){
+			this.list.push(num);
+			return;
+		}
+		let i;			
+		for (i = 0; i < len; i += 1) {
+			if(num <= this.list[i]){
+				this.list.splice(i,0,num);
+				return;
+			}
+		}
+	}
+}

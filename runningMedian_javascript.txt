@@ -1,0 +1,76 @@
+const testArray1 = [1,10,3,6,5,100,25,-51,-5,-232,-54,64,510,3,6,5,100,25,-51,-5,-232,-54,64,510,-51,6,5,100,25,-51,-5,-232,-54,64,510,3,6,5,100,25,-51,-5,-232,-54,64,510,-56,5,100,25,-51,-5,-232,-54,64,510,3,6,5,100,25,-51,-5,-232,-54,64,510,-56,5,100,25,-51,-5,-232,-54,64,510,3,6,5,100,25,-51,-5,-232,-54,64,510,-56,5,100,25,-51,-5,-232,-54,64,510,3,6,5,100,25,-51,-5,-232,-54,64,510,-56,5,100,25,-51,-5,-232,-54,64,510,3,6,5,100,25,-51,-5,-232,-54,64,510,-56,5,100,25,-51,-5,-232,-54,64,510,3,6,5,100,25,-51,-5,-232,-54,64,510,-5];
+const testArray = [1,10,3,6,5,7,2,100,-1];
+
+console.log(testArray);
+
+
+
+
+
+const runningMedian = (inputArray) => {	
+	function orderedList() {
+		this.list = [];
+		this.add = function (num) {
+			const len = this.list.length;
+			if (len === 0) {
+				this.list.push(num);
+				return;
+			}
+			let first = this.list[0];
+			if (num <= first){
+				this.list.unshift(num);
+				return;
+			}		
+			let last = this.list[len-1];
+			if (num >= last){
+				this.list.push(num);
+				return;
+			}
+			let i;			
+			for (i = 0; i < len; i += 1) {
+				if(num <= this.list[i]){
+					this.list.splice(i,0,num);
+					return;
+				}
+			}
+		}
+	}
+	
+	const max = new orderedList();
+	const min = new orderedList();
+	let i, temp, maxLen, minLen;
+	const returnArray = [];
+	for(i = 0; i < inputArray.length; i++){
+		temp = inputArray[i];
+		maxLen = max.list.length;
+		minLen = min.list.length;
+		if(maxLen < minLen){console.log("***************")}
+		if (maxLen === minLen) {
+			if (temp >= min.list[min.list.length-1]) {
+				max.add(temp);
+			} else {
+				max.add(temp);
+				min.add(max.list.shift());
+				max.add(min.list.pop());
+			}
+
+		} else {
+			if (temp <= max.list[0]) {
+				min.add(temp);
+			} else {
+				max.add(temp);
+				min.add(max.list.shift());
+			}
+		}
+		if(max.list.length > min.list.length){
+			returnArray.push(max.list[0]);
+		}else{
+			returnArray.push((min.list[min.list.length-1]+max.list[0])/2);
+		}
+	}	
+	return returnArray;
+}
+
+
+const medianArray = runningMedian(testArray);
+console.log(medianArray);

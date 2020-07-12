@@ -1,0 +1,58 @@
+public class Solution {
+    public IList<int> PartitionLabels(string s) 
+    {
+        // Build a map of the char, (startIndex, stopIndex)
+        // We know that the intervals will be in order since we process the string starting from the beginning
+        Dictionary<char, Pair> map = new Dictionary<char, Pair>();
+        IList<int> res = new List<int>();
+        
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (!map.ContainsKey(s[i]))
+                map.Add(s[i], new Pair(i, i));
+            
+            map[s[i]].End = i;
+        }
+        
+        var pairs = map.Values.ToList();
+        // get first pair based on char as index zero
+        int start = pairs[0].Start;
+        int end = pairs[0].End;
+        
+        for (int i = 1; i < pairs.Count; i++)
+        {
+            var pair = pairs[i];
+            
+            if (pair.Start <= end)
+            {
+                // overlapping
+                end = Math.Max(end, pair.End);
+            }
+            else
+            {
+                res.Add(end - start + 1);
+                start = pair.Start;
+                end = pair.End;
+            }
+        }
+        
+        // ensure to add the last interval
+        res.Add(end - start + 1);
+        
+        return res;
+    }
+}
+
+public class Pair
+{
+    public int Start;
+    public int End;
+    public Pair(int l, int r)
+    {
+        Start = l;
+        End = r;
+    }
+}
+
+Intuitively, this seemed like a Merge Intervals problem to me, so I went with that approach. Space complexity will be larger as I'm storing all start and end pairs foreach char in s, which makes the space complexity O(26 * sizeOf(pair)). Runtime is still O(len(s) + numOfDistinctChars) == O(n), though, since we know the intervals are already sorted by "start time".
+

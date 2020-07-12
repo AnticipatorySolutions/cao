@@ -1,0 +1,41 @@
+def find_critical_servers(num_nodes, num_edges, edges):
+    import copy
+    graph = {}
+    for snode, enode in edges:
+        if snode not in graph:
+            graph[snode] = []
+        if enode not in graph:
+            graph[enode] = []
+        if enode not in graph[snode]:
+            graph[snode].append(enode)
+        if snode not in graph[enode]:
+            graph[enode].append(snode)
+
+    # print("graph=%s" % graph)
+    articulation_points = []
+    graph_copy = copy.deepcopy(graph)
+    for node in graph_copy:
+        # print("node=%s" % node)
+        for adj_node in graph[node]:
+            graph[adj_node].remove(node)
+        del graph[node]
+
+        # print("graph after node deleted=%s" % graph)
+
+        visited = set()
+        queue = [list(graph.keys())[0]]
+        while queue:
+            snode = queue.pop(0)
+            for enode in set(graph[snode]) - visited:
+                queue.append(enode)
+            visited.add(snode)
+        if len(visited) != len(graph):
+            articulation_points.append(node)
+        graph = copy.deepcopy(graph_copy)
+        # print("visited=%s" % visited)
+        # print("graph restored back=%s" % graph)
+
+    return articulation_points
+
+
+print(find_critical_servers(7, 7, [[0, 1], [0, 2], [1, 3], [2, 3], [2, 5], [5, 6], [3, 4]]))

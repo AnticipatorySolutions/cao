@@ -1,0 +1,109 @@
+#include<cstdio>
+#include<algorithm>
+#include<iostream>
+#include<cmath>
+#include<cstring>
+
+using namespace std;
+
+#define fo(i,a,b) for(int i=a;i<=b;i++)
+#define fd(i,a,b) for(int i=a;i>=b;i--)
+
+const int N = 5e5+10;
+
+typedef long long LL;
+
+int tree[N];
+struct sj{
+    int ty,l,r,x;
+    friend bool operator <(sj a,sj b){
+        if (a.x!=b.x)return a.x<b.x;
+        return a.ty<b.ty;
+    }
+}q[N*20];
+int sta[N],k,m;
+int n;
+LL ans;
+int L[N],R[N],a[N],fa[N],rt,s[N],f[N];
+
+void add(int ty,int l,int r,int x){
+    q[++m].ty=ty;q[m].l=l;q[m].r=r;q[m].x=x;
+}
+
+void bfs(){
+    int he=0,ta=1;
+    f[1]=rt;
+    while(he<ta){
+        int x=f[++he];
+        if (L[x])f[++ta]=L[x];
+        if (R[x])f[++ta]=R[x];
+    }
+    fd(d,n,1){
+        int x=f[d];
+        s[x]=s[L[x]]+s[R[x]]+1;
+        if(L[x]&&R[x]){
+            if (s[L[x]]<s[R[x]]){
+                fo(i,x-s[L[x]],x-1)
+                add(1,x,x+s[R[x]],a[x]/a[i]);
+                add(1,x+1,x+s[R[x]],1);
+            }
+            else{
+                fo(i,x+1,x+s[R[x]])
+                add(1,x-s[L[x]],x,a[x]/a[i]);
+                add(1,x-s[L[x]],x-1,1);
+            }
+        }
+        else
+            if (L[x]+R[x]){
+                if (L[x])add(1,x-s[L[x]],x-1,1);
+                else add(1,x+1,x+s[R[x]],1);
+            }
+    }
+}
+
+int getans(int x){
+    int ans=0;
+    while(x){
+        ans+=tree[x];
+        x-=x&-x;
+    }
+    return ans;
+}
+
+void change(int x){
+    while(x<=n){
+        tree[x]++;
+        x+=x&-x;
+    }
+}
+
+int main(){
+    scanf("%d",&n);
+    fo(i,1,n)scanf("%d",&a[i]);
+    sta[k=1]=1;
+    fo(i,2,n){
+        if (a[i]<=a[sta[k]]){
+            fa[i]=sta[k];
+            sta[++k]=i;
+            continue;
+        }
+        while(k&&a[sta[k]]<a[i])k--;
+        fa[sta[k+1]]=i;
+        fa[i]=sta[k];
+        sta[++k]=i;
+    }
+    fo(i,1,n)
+    if (!fa[i])rt=i;
+    else{
+        if (i<fa[i])L[fa[i]]=i;
+        else R[fa[i]]=i;
+    }
+    bfs();
+    fo(i,1,n)add(0,i,0,a[i]);
+    sort(q+1,q+1+m);
+    fo(i,1,m)
+    if (q[i].ty)ans=ans+getans(q[i].r)-getans(q[i].l-1);
+    else change(q[i].l);
+    printf("%lld\n",ans);
+    return 0;
+}

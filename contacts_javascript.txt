@@ -1,0 +1,89 @@
+'use strict';
+
+const fs = require('fs');
+
+process.stdin.resume();
+process.stdin.setEncoding('utf-8');
+
+let inputString = '';
+let currentLine = 0;
+
+process.stdin.on('data', inputStdin => {
+    inputString += inputStdin;
+});
+
+process.stdin.on('end', _ => {
+    inputString = inputString.trim().split('\n').map(str => str.trim());
+
+    main();
+});
+
+function readLine() {
+    return inputString[currentLine++];
+}
+
+function contacts(queries) {
+  function tries(){
+    function node(val){
+      this.val = val;
+      this.count = 0;
+      this.edges = {};
+    }
+    this.root = new node(null);
+    this.add = function(word){
+      if(!word){return}
+      let focus = this.root;
+      let temp;
+      for(let i =0; i< word.length; i++){
+        temp = word.charAt(i);
+        if(!focus.edges[temp]){
+          focus.edges[temp] = new node(temp);
+        }
+        focus = focus.edges[temp];
+        focus.count++;
+      }
+    }
+    this.find = function(word){
+      if(!word){return 0;}
+      let temp,focus;
+      focus = this.root;
+      for(let i =0; i< word.length; i++){
+        temp = word.charAt(i);
+        if(focus.edges[temp]){
+          focus = focus.edges[temp];
+        }else{
+          return 0;
+        }
+      }
+      return focus.count;
+    }
+  }
+  let t = new tries();
+  let s = [];
+  for(let i = 0; i< queries.length;i++){
+    if(queries[i][0]=='add'){
+      t.add(queries[i][1]);
+    }else{
+      s.push(t.find(queries[i][1]));
+    }
+  }
+  return s;
+}
+
+function main() {
+    const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+
+    const queriesRows = parseInt(readLine(), 10);
+
+    let queries = Array(queriesRows);
+
+    for (let queriesRowItr = 0; queriesRowItr < queriesRows; queriesRowItr++) {
+        queries[queriesRowItr] = readLine().split(' ');
+    }
+
+    let result = contacts(queries);
+
+    ws.write(result.join("\n") + "\n");
+
+    ws.end();
+}

@@ -1,0 +1,62 @@
+function processData(input) {
+  function tries(){
+    function node(val){
+      this.val = val;
+      this.count = 0;
+      this.edges = {};
+      this.stop = false;
+    }
+    this.root = new node(null);
+    this.add = function(word){
+      if(!word){return}
+      let focus = this.root;
+      let temp;
+      for(let i =0; i< word.length; i++){
+        temp = word.charAt(i);
+        if(!focus.edges[temp]){
+          focus.edges[temp] = new node(temp);
+        }
+        focus = focus.edges[temp];
+        focus.count++;
+        if(focus.stop){
+          console.log('BAD SET');
+          console.log(word);
+          return false;
+        }
+      }
+      //console.log(focus);
+      if(focus.count > 1){
+        console.log('BAD SET');
+        console.log(word);
+        return false;
+      }
+      focus.stop = true;
+      return true;
+    }
+  }
+  let t = new tries();
+  let s = input.split('\n');
+  let l = s.unshift();
+  let win = true;
+
+  for(let i = 1; i < l;i++){
+    if(!t.add(s[i])){
+      win = false;
+      break;
+    }
+  }
+  if(win){
+    console.log('GOOD SET');
+  }
+} 
+
+process.stdin.resume();
+process.stdin.setEncoding("ascii");
+_input = "";
+process.stdin.on("data", function (input) {
+    _input += input;
+});
+
+process.stdin.on("end", function () {
+   processData(_input);
+});

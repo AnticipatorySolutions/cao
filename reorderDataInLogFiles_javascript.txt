@@ -1,0 +1,11 @@
+var reorderLogFiles = function(logs) {
+    
+    const removeFirstIndex = (s) => s.split(" ").slice(1).join(" ");
+    const d = logs.filter( a => !removeFirstIndex(a).match(/[a-zA-Z]/g));
+    const l = logs.filter( a => removeFirstIndex(a).match(/[a-zA-Z]/g)).sort((a,b) =>  
+                                                                             removeFirstIndex(a) === removeFirstIndex(b) 
+                                                                             ? a.localeCompare(b)
+                                                                             : removeFirstIndex(a).localeCompare(removeFirstIndex(b)));
+    
+    return [...l, ...d]
+};

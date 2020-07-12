@@ -1,0 +1,26 @@
+function findPairWithGivenSum(nums, target) {
+    let newTarget = target - 30,
+        results = []; //60
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+            if (nums[i] + nums[j] == newTarget) {
+                results.push([i, j]);
+            }
+        }
+    }
+    console.log(results);
+
+    //finding the max of the items
+    let index, currentHighest = -1;
+    results.forEach((item, i) => {
+        if (nums[item[0]] > currentHighest || nums[item[1]] > currentHighest) {
+            currentHighest = Math.max(nums[item[0]], nums[item[1]]);
+            index = i;
+        }
+    });
+    console.log(results[index]);
+    return results[index];
+}
+
+findPairWithGivenSum([50, 20, 20, 40, 25, 30, 10], 90);
+findPairWithGivenSum([10, 20, 25, 25,  35, 45, 50, 70], 90);

@@ -1,0 +1,49 @@
+def get_adj_list(edges: List[int], num_nodes: int) -> List[List[int]]:
+    adj = [[] for _ in range(num_nodes)]
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)
+    return adj
+
+'''
+O(V+E) time because of DFS
+O(V+E) space because of the adjacency list and call stack
+'''
+def critical_routers(num_nodes: int , num_edges: int, 
+                    edges: List[List[int]]) -> List[int]:
+    adj = get_adj_list(edges, num_nodes)
+    n = num_nodes
+    visited = [False for _ in range(n)]
+    depth = [-1 for _ in range(n)]
+    low = [-1 for _ in range(n)]
+    parent = [None for _ in range(n)]
+    art_points = [] # articulation points
+
+    '''
+    Run DFS while maintaining the following:
+    * The depth of each vertex in the DFS tree (once it gets visited)
+    * the lowpoint for each vertex v, i.e. the lowest depth of neighbors of all 
+    descendants of v (including v itself) in the DFS tree.
+    '''
+    def get_art_points(node: int, d: int) -> None:
+        visited[node] = True
+        depth[node] = d
+        low[node] = d
+        child_count = 0
+        articulation = False    # for input node
+
+        for neighbor in adj[node]:
+            if not visited[neighbor]:
+                parent[neighbor] = node
+                get_art_points(neighbor, d+1)
+                child_count += 1
+                if low[neighbor] >= depth[node]:
+                    articulation = True
+                low[node] = min(low[node], low[neighbor])
+            elif neighbor != parent[node]:
+                low[node] = min(low[node], low[neighbor])
+        if (parent[node] and articulation) or (not parent[node] and child_count>1):
+            art_points.append(node)
+
+    get_art_points(0, 0)
+    return art_points

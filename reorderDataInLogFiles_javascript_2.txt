@@ -1,0 +1,21 @@
+var reorderLogFiles = function(logs) {
+    let d = [], a = [];
+    for(let l of logs) {
+        let m = l.match(/(?<= )([a-z0-9])+/g);
+        if(m[0]) {
+            if(!isNaN(m[0])) d.push(l);
+            else a.push(l);
+        } 
+    }
+    a.sort((a, b) => { 
+        let wda = a.split(' '), wba = b.split(' ');
+        let l = Math.min(wda.length, wba.length);
+        let x;
+        for(x = 1; x < l; x++) {
+            if(wba[x] === wda[x]) continue;
+            return wba[x] > wda[x] ? -1 : 1
+        }
+        return 1;
+    });
+    return a.concat(...d);
+};

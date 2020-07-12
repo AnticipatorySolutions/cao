@@ -1,0 +1,38 @@
+function isBalanced(s) {
+  if(!s || s.length < 2 || s.length%2!==0){return 'NO'}
+
+  function isOpen(c){
+    if(c==='['||c==='{'||c==='('){
+      return true;
+    }
+    return false;
+  }
+
+  const closed = {
+    ']':'[',
+    '}':'{',
+    ')':'(',
+  };
+
+  let i;
+  let sl = s.length;
+  let pile = [];
+  let temp;
+  for(i = 0; i < sl; i++){
+    temp=s.charAt(i);
+    if(isOpen(temp)){
+      pile.push(temp);
+    }else{
+      if(pile.length === 0 ||
+        pile[pile.length-1]!==closed[temp]){
+        return 'NO'
+      }else{
+        pile.pop();
+      }
+    }
+  }
+  if(pile.length != 0){
+    return 'NO'
+  }
+  return 'YES';
+}
